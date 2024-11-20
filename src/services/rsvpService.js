@@ -44,6 +44,17 @@ const rsvpToEvent = async (userId, eventId, status, io) => {
                     recipientId: eventCreatorId, // The event creator (recipient of the notification)
                 });
             }
+            // If status is changing from "maybe" to "ignore" or vice versa
+            else if (
+                (previousStatus === 'maybe' && status === 'ignore') ||
+                (previousStatus === 'ignore' && status === 'maybe')
+            ) {
+                // Just update the status without affecting "interested" count
+                await RSVP.updateOne(
+                    { _id: existingRSVP._id },
+                    { $set: { status } } // Update status to either "maybe" or "ignore"
+                );
+            }
             // If status is changing to the same status (no change), no need to update the count
             else if (previousStatus === status) {
                 return { success: true, message: 'RSVP status is already set to this value.' };
