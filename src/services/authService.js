@@ -38,7 +38,7 @@ const authenticateUser = async (email, password) => {
     const token = jwt.sign(
         { id: user._id, role: user.role },
         process.env.JWT_SECRET_KEY,
-        { expiresIn: '1h' }
+        // { expiresIn: '1h' }                     // commented for no expiration for token for simplicity to test
     );
 
     // Exclude password before returning user data
